@@ -7,6 +7,7 @@ import SignUnPage from "./pages/signUpPage";
 import StorePage from "./pages/storePage";
 import {AuthProvider} from "./contexts/AuthContext";
 import NewProductPage from "./pages/newProductPage";
+import BuyProductPage from "./pages/buyProductPage";
 
 export default function App() {
 
@@ -18,6 +19,7 @@ export default function App() {
           <Route path="/signUp" element={<SignUnPage />} />
           <Route path="/storePage" element={<StorePage />} />
           <Route path="/newProduct" element={<NewProductPage />} />
+          <Route path="/buyProduct/:id" element={<BuyProductPage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

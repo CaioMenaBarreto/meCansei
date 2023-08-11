@@ -45,7 +45,6 @@ export default function StorePage() {
         const fetchData = async () => {
             try {
                 const res = await axios.get("http://localhost:5000/storePage", config);
-                console.log(res.data.message);
                 setProducts(res.data.message);
             } catch (error) {
                 console.log(error);
@@ -64,6 +63,10 @@ export default function StorePage() {
         fetchData();
 
     }, []);
+
+    function handleProductClick(id) {
+        navigate(`/buyProduct/${id}`);
+    };
 
     if (products.length === 0) {
         return (
@@ -107,11 +110,11 @@ export default function StorePage() {
                 <NameUser>
                     Olá, {name}!
                 </NameUser>
-                <IonIcon icon={logOutOutline} style={{ fontSize: '38px', marginRight: '30px', color: '#1670df' }} onClick={handleLogout} />
+                <IonIcon icon={logOutOutline} style={{ fontSize: '38px', marginRight: '30px', color: '#ffffff' }} onClick={handleLogout} />
             </NavBar>
             <ProductsConteiner>
                 {products.map((product) => (
-                    <Product key={product.id}>
+                    <Product key={product.id} onClick={() => handleProductClick(product.id)}>
                         <ImageProduct src={product.photo} />
                         <Description>
                             <NameProduct>{product.name}</NameProduct>
@@ -134,7 +137,7 @@ const StoreConteiner = styled.div`
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
-    background-color: #1670df;
+    background-color: #ffffff;
 `
 const NavBar = styled.div`
     width: 100%;
@@ -147,7 +150,7 @@ const NavBar = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #ffffff;
+    background-color: #1670df;
     z-index: 10;
 `;
 
@@ -169,10 +172,10 @@ const ButtonMyProducts = styled.button`
     position: absolute;
     width: 80px;
     height: 40px;
-    background-color: #1670df;
+    background-color: #ffffff;
     border: none;
     border-radius: 7px;
-    color: #ffffff;
+    color: #1670df;
     font-size: 13px;
     font-family: 'Vollkorn', serif;
     right: 190px;
@@ -184,7 +187,7 @@ const NameUser = styled.div`
     left: 30px;
     font-size: 25px;
     font-family: 'Vollkorn', serif;
-    color: #1670df;
+    color: #ffffff;
 `
 
 const LogoConteiner = styled.div`
@@ -200,13 +203,13 @@ const LogoImg = styled.img`
     border-radius: 100%;
     width: 53px;
     height: 50px;
-    margin-bottom: 15px;
+    margin-bottom: 5px;
     z-index: 2;
 `;
 
 const LogoName = styled.p`
     font-size: 23px;
-    color: #1670df;
+    color: #ffffff;
     font-family: 'Vollkorn', serif;
     z-index: 2;
 `;
@@ -227,15 +230,14 @@ const ProductsConteiner = styled.div`
 const Product = styled.div`
     width: 470px;
     height: 200px;
-    background-color: #1670df;
+    background-color: #ffffff;
     border-radius: 7px;
     margin-bottom: 20px;
     display: flex;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.8);
+    box-shadow: 4px 8px 12px rgba(19, 60, 209, 0.8);
     cursor: pointer;
     &:hover {
-        background-color: #ffffff;
-        color: #1670df;
+        background-color: #1670df;
     }
 `;
 

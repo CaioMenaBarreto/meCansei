@@ -15,7 +15,6 @@ export default function newProductPage() {
     const [value, setValue] = useState("");
     const [photo, setPhoto] = useState("");
     const navigate = useNavigate();
-    useQuickOut();
 
     function goStorePage() {
         navigate("/storePage");
@@ -66,6 +65,9 @@ export default function newProductPage() {
             navigate("/storePage");
         }).catch(error => {
             console.log(error.response.data.message);
+            if (error.response && error.response.status === 401) {
+                useQuickOut();
+            }
             Swal.fire({
                 title: 'Erro',
                 text: error.response.data.message,
