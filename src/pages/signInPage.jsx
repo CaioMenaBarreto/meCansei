@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
+import AuthContext from "../contexts/AuthContext";
 
 export default function SignInPage() {
 
+    const {setToken} = useContext(AuthContext);
+    const {setName} = useContext(AuthContext);
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
     const navigate = useNavigate();
@@ -17,9 +20,13 @@ export default function SignInPage() {
             email: email,
             password: senha
         };
+        
         const promise = axios.post("http://localhost:5000/signIn", data);
         promise.then((response) => {
-            console.log(response.data.token);
+            setToken(response.data.token);
+            setName(response.data.name);
+            localStorage.setItem("token", response.data.token);
+            localStorage.setItem("name", response.data.name);
             navigate("/storePage");
         }).catch(error => {
             console.error("Erro:", error);
