@@ -139,9 +139,8 @@ export default function DetailsMyProductPage() {
 
 const DetailProductConteiner = styled.div`
     width: 100%;
-    height: 900px;
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: hidden;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -213,7 +212,7 @@ const ProductConteiner = styled.div`
     background-color: #ffffff;
     font-size: 33px;
     width: 70%;
-    height: 850px;
+    height: 900px;
     margin-top: 20px;
     display: flex;
     flex-direction: column;
