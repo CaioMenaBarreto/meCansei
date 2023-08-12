@@ -44,7 +44,7 @@ export default function StorePage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get("http://localhost:5000/storePage", config);
+                const res = await axios.get("https://projeto18-freela-front-mauve.vercel.app/storePage", config);
                 setProducts(res.data.message);
             } catch (error) {
                 console.log(error);
