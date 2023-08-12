@@ -8,6 +8,8 @@ import StorePage from "./pages/storePage";
 import {AuthProvider} from "./contexts/AuthContext";
 import NewProductPage from "./pages/newProductPage";
 import BuyProductPage from "./pages/buyProductPage";
+import MyProductPage from "./pages/myProductsPage";
+import DetailsMyProductPage from "./pages/detailsMyProductPage";
 
 export default function App() {
 
@@ -20,6 +22,8 @@ export default function App() {
           <Route path="/storePage" element={<StorePage />} />
           <Route path="/newProduct" element={<NewProductPage />} />
           <Route path="/buyProduct/:id" element={<BuyProductPage />} />
+          <Route path="/myProducts" element={<MyProductPage />} />
+          <Route path="/detailMyProduct/:id" element={<DetailsMyProductPage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

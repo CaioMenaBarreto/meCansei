@@ -1,21 +1,17 @@
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQuickOut } from "../hooks/useQuickOut";
 import AuthContext from "../contexts/AuthContext";
 import { IonIcon } from '@ionic/react';
 import { logOutOutline } from 'ionicons/icons';
 import Swal from "sweetalert2";
 
-export default function StorePage() {
+export default function myProductsPage() {
+    const [myProducts, setMyProducts] = useState([]);
     const { name, logout, token } = useContext(AuthContext);
     const navigate = useNavigate();
-    const [products, setProducts] = useState([]);
-
-    function goNewProductPage() {
-        navigate("/newProduct");
-    };
 
     async function handleLogout() {
         const confirmLogout = await Swal.fire({
@@ -35,6 +31,10 @@ export default function StorePage() {
         };
     };
 
+    function goStorePage() {
+        navigate("/storePage");
+    };
+
     const config = {
         headers: {
             Authorization: `Bearer ${token}`
@@ -42,84 +42,45 @@ export default function StorePage() {
     };
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const res = await axios.get("http://localhost:5000/storePage", config);
-                setProducts(res.data.message);
-            } catch (error) {
-                console.log(error);
-                if (error.response && error.response.status === 401) {
-                    useQuickOut();
-                }
-                Swal.fire({
-                    title: 'Erro',
-                    text: error.response.data.message,
-                    icon: 'error',
-                    confirmButtonText: 'Ok'
-                });
+        const promise = axios.get("http://localhost:5000/myProducts", config);
+        promise.then(res => {
+            console.log(res.data);
+            setMyProducts(res.data)
+        }).catch(error => {
+            console.log(error);
+            if (error.response && error.response.status === 401) {
+                useQuickOut();
             }
-        };
-
-        fetchData();
-
+            Swal.fire({
+                title: 'Erro',
+                text: error.response.data.message,
+                icon: 'error',
+                confirmButtonText: 'Ok'
+            });
+        });
     }, []);
 
     function handleProductClick(id) {
-        navigate(`/buyProduct/${id}`);
+        navigate(`/detailMyProduct/${id}`);
     };
 
-    function goMyProductsPage() {
-        navigate("/myProducts");
-    }
-
-    if (products.length === 0) {
-        return (
-            <StoreConteiner>
-                <NavBar>
-                    <LogoConteiner>
-                        <LogoImg src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRdPmhNa0zJrX0rXeQSo9UVSeE5eQxz_4X4g_15HflV0EtHjK4Q" alt="Logo da empresa" />
-                        <LogoName>MeCansei</LogoName>
-                    </LogoConteiner>
-                    <ButtonNewProduct onClick={goNewProductPage}>
-                        Novo Produto
-                    </ButtonNewProduct>
-                    <ButtonMyProducts onClick={goMyProductsPage}>
-                        Ver meus produtos
-                    </ButtonMyProducts>
-                    <NameUser>
-                        Olá, {name}!
-                    </NameUser>
-                    <IonIcon icon={logOutOutline} style={{ fontSize: '38px', marginRight: '30px', color: '#ffffff' }} onClick={handleLogout} />
-                </NavBar>
-                <ProductsConteiner>
-                    <NoHaveProducts>
-                        Não há produtos disponíveis na loja
-                    </NoHaveProducts>
-                </ProductsConteiner>
-            </StoreConteiner>
-        );
-    }
-
     return (
-        <StoreConteiner>
+        <MyProductsConteiner>
             <NavBar>
                 <LogoConteiner>
                     <LogoImg src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRdPmhNa0zJrX0rXeQSo9UVSeE5eQxz_4X4g_15HflV0EtHjK4Q" alt="Logo da empresa" />
                     <LogoName>MeCansei</LogoName>
                 </LogoConteiner>
-                <ButtonNewProduct onClick={goNewProductPage}>
-                    Novo Produto
-                </ButtonNewProduct>
-                <ButtonMyProducts onClick={goMyProductsPage}>
-                    Ver meus produtos
-                </ButtonMyProducts>
+                <button onClick={goStorePage}>
+                    Voltar para a loja
+                </button>
                 <NameUser>
                     Olá, {name}!
                 </NameUser>
                 <IonIcon icon={logOutOutline} style={{ fontSize: '38px', marginRight: '30px', color: '#ffffff' }} onClick={handleLogout} />
             </NavBar>
             <ProductsConteiner>
-                {products.map((product) => (
+                {myProducts.map((product) => (
                     <Product key={product.id} onClick={() => handleProductClick(product.id)}>
                         <ImageProduct src={product.photo} />
                         <Description>
@@ -130,11 +91,11 @@ export default function StorePage() {
                     </Product>
                 ))}
             </ProductsConteiner>
-        </StoreConteiner>
+        </MyProductsConteiner>
     );
-};
+}
 
-const StoreConteiner = styled.div`
+const MyProductsConteiner = styled.div`
     width: 100%;
     height: 100vh;
     overflow-x: hidden;
@@ -157,35 +118,19 @@ const NavBar = styled.div`
     justify-content: center;
     align-items: center;
     background-color: #1670df;
-    z-index: 10;
-`;
-
-const ButtonNewProduct = styled.button`
-    position: absolute;
-    width: 80px;
-    height: 40px;
-    background-color: green;
-    border: none;
-    border-radius: 7px;
-    color: #ffffff;
-    font-size: 13px;
-    font-family: 'Vollkorn', serif;
-    right: 90px;
-    cursor: pointer;
-`;
-
-const ButtonMyProducts = styled.button`
-    position: absolute;
-    width: 80px;
-    height: 40px;
-    background-color: #ffffff;
-    border: none;
-    border-radius: 7px;
-    color: #1670df;
-    font-size: 13px;
-    font-family: 'Vollkorn', serif;
-    right: 190px;
-    cursor: pointer;
+    button {
+        position: absolute;
+        width: 80px;
+        height: 40px;
+        background-color: #ffffff;
+        border: none;
+        border-radius: 7px;
+        color: #1670df;
+        font-size: 13px;
+        font-family: 'Vollkorn', serif;
+        right: 90px;
+        cursor: pointer;
+    }
 `;
 
 const NameUser = styled.div`
@@ -222,7 +167,7 @@ const LogoName = styled.p`
 
 const ProductsConteiner = styled.div`
     font-family: 'Vollkorn', serif;
-    color: #1670df;
+    color: #ffffff;
     font-size: 33px;
     width: 90%;
     margin-top: 20px;
@@ -232,14 +177,6 @@ const ProductsConteiner = styled.div`
     flex-wrap: wrap;
     margin-top: 100px;
 `;
-
-const NoHaveProducts = styled.p`
-    font-family: 'Vollkorn', serif;
-    color: #1670df;
-    font-size: 33px;
-    margin-left: 32%;
-    margin-top: 21%;
-`
 
 const Product = styled.div`
     width: 470px;

@@ -5,10 +5,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useQuickOut } from "../hooks/useQuickOut";
 import AuthContext from "../contexts/AuthContext";
 import { IonIcon } from '@ionic/react';
-import { logOutOutline } from 'ionicons/icons';
+import { logOutOutline, trashOutline } from 'ionicons/icons';
 import Swal from "sweetalert2";
 
-export default function buyProductPage() {
+export default function DetailsMyProductPage() {
     const { name, logout, token } = useContext(AuthContext);
     const [product, setProduct] = useState({});
     const { id } = useParams();
@@ -32,6 +32,11 @@ export default function buyProductPage() {
         };
     };
 
+    function goStorePage() {
+        navigate("/storePage");
+    };
+
+
     const config = {
         headers: {
             Authorization: `Bearer ${token}`
@@ -41,7 +46,7 @@ export default function buyProductPage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get(`http://localhost:5000/buyProduct/${id}`, config);
+                const res = await axios.get(`http://localhost:5000/detailMyProduct/${id}`, config);
                 setProduct(res.data);
                 console.log(res.data);
             } catch (error) {
@@ -61,53 +66,42 @@ export default function buyProductPage() {
         fetchData();
     }, [id]);
 
+    async function handleDelete(id) {
 
-    function goStorePage() {
-        navigate("/storePage");
-    };
+        const confirmDelete = await Swal.fire({
+            title: 'Cuidado',
+            text: 'Deseja realmente deletar o produto?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim, quero deletar!',
+            cancelButtonText: 'Cancelar'
+        });
 
-    const data = {
-        vendido: true
-    }
-
-    function buyProduct() {
-        const promise = axios.put(`http://localhost:5000/buyProduct/${id}`, data, config);
-        promise
-            .then(() => {
-                    Swal.fire({
-                        title: 'Successo',
-                        text: "Compra realizada com sucesso!",
-                        icon: 'success',
-                        confirmButtonText: 'Ok'
-                    });
-                    navigate("/storePage");
-            })
-            .catch(error => {
-                console.log(error.response.data);
-                if (error.response.data.message === "Você não pode comprar os produtos que você mesmo está vendendo.") {
-                    Swal.fire({
-                        title: 'Erro',
-                        text: error.response.data.message,
-                        icon: 'error',
-                        confirmButtonText: 'Ok'
-                    });
-                    navigate("/storePage");
-                };
-
-                if (error.response && error.response.status === 401) {
-                    useQuickOut();
-                }
+        if (confirmDelete.isConfirmed) {
+            const promise = axios.delete(`http://localhost:5000/deleteMyProduct/${id}`, config);
+            promise.then(() => {
+                Swal.fire({
+                    title: 'Sucesso',
+                    text: 'Produto deletado.',
+                    icon: 'sucess',
+                    confirmButtonText: 'Ok'
+                });
+                navigate("/storePage");
+            }).catch(error => {
                 Swal.fire({
                     title: 'Erro',
                     text: error.response.data.message,
                     icon: 'error',
                     confirmButtonText: 'Ok'
                 });
-            });
+            })
+        };
     };
 
     return (
-        <BuyProductConteiner>
+        <DetailProductConteiner>
             <NavBar>
                 <LogoConteiner>
                     <LogoImg src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRdPmhNa0zJrX0rXeQSo9UVSeE5eQxz_4X4g_15HflV0EtHjK4Q" alt="Logo da empresa" />
@@ -129,26 +123,30 @@ export default function buyProductPage() {
                 <ProductPrice>
                     Preço: {product.value}
                 </ProductPrice>
+                <ProductStatus>
+                    Vendido: {product.vendido === false ? "Não." : "Sim."}
+                </ProductStatus>
                 <ProductDescription>
                     Descrição: {product.description}
                 </ProductDescription>
-                <button onClick={buyProduct}>
-                    Comprar
+                <button onClick={() => handleDelete(product.id)}>
+                    Deletar produto
                 </button>
             </ProductConteiner>
-        </BuyProductConteiner>
+        </DetailProductConteiner>
     );
-};
+}
 
-const BuyProductConteiner = styled.div`
+const DetailProductConteiner = styled.div`
     width: 100%;
-    height: 100vh;
+    height: 900px;
     overflow-x: hidden;
+    overflow-y: scroll;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: #1670df;        
+    background-color: #1670df;     
 `;
 
 const NavBar = styled.div`
@@ -215,14 +213,14 @@ const ProductConteiner = styled.div`
     background-color: #ffffff;
     font-size: 33px;
     width: 70%;
-    height: 750px;
+    height: 850px;
     margin-top: 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-start;
     flex-wrap: wrap;
-    margin-top: 50px;   
+    margin-top: 90px;   
     border-radius: 8px;
     box-shadow: 4px 8px 12px rgba(0, 0, 0, 0.8);
     button {
@@ -252,23 +250,31 @@ const ProductImage = styled.img`
 const ProductName = styled.p`
     font-family: 'Vollkorn', serif;
     font-size: 33px;
-    margin-top: -35px;
     margin-left: 50px;
+    margin-bottom: 8px;
     color: #244874;
 `;
 
 const ProductPrice = styled.p`
     font-family: 'Vollkorn', serif;
     font-size: 33px;
-    margin-top: -45px;
     margin-left: 50px;
+    margin-bottom: 8px;
     color: #244874;
 `;
 
 const ProductDescription = styled.p`
     font-family: 'Vollkorn', serif;
     font-size: 33px;
-    margin-top: -45px;
     margin-left: 50px;
+    margin-bottom: 8px;
     color: #244874;
-`
+`;
+
+const ProductStatus = styled.p`
+    font-family: 'Vollkorn', serif;
+    font-size: 33px;
+    margin-left: 50px;
+    margin-bottom: 8px;
+    color: #244874;
+`;
