@@ -54,7 +54,7 @@ export default function newProductPage() {
             }
         };
 
-        const promise = axios.post("https://projeto18-freela-front-mauve.vercel.app/newProduct", data, config);
+        const promise = axios.post("https://mecansei.onrender.com/newProduct", data, config);
         promise.then(res => {
             Swal.fire({
                 title: 'Successo',

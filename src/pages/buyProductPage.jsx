@@ -41,7 +41,7 @@ export default function buyProductPage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get(`https://projeto18-freela-front-mauve.vercel.app/buyProduct/${id}`, config);
+                const res = await axios.get(`https://mecansei.onrender.com/buyProduct/${id}`, config);
                 setProduct(res.data);
                 console.log(res.data);
             } catch (error) {
@@ -71,7 +71,7 @@ export default function buyProductPage() {
     }
 
     function buyProduct() {
-        const promise = axios.put(`https://projeto18-freela-front-mauve.vercel.app/buyProduct/${id}`, data, config);
+        const promise = axios.put(`https://mecansei.onrender.com/buyProduct/${id}`, data, config);
         promise
             .then(() => {
                     Swal.fire({

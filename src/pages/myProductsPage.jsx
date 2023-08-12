@@ -42,7 +42,7 @@ export default function myProductsPage() {
     };
 
     useEffect(() => {
-        const promise = axios.get("https://projeto18-freela-front-mauve.vercel.app/myProducts", config);
+        const promise = axios.get("https://mecansei.onrender.com/myProducts", config);
         promise.then(res => {
             console.log(res.data);
             setMyProducts(res.data)

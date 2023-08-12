@@ -41,7 +41,7 @@ export default function SignUpPage() {
             phone: formatPhone(phone)
         };
 
-        const promise = axios.post("https://projeto18-freela-front-mauve.vercel.app/signUp", data)
+        const promise = axios.post("https://mecansei.onrender.com/signUp", data)
         promise.then(() => {
             navigate("/");
         }).catch(error => {
