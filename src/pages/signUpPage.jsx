@@ -3,6 +3,7 @@ import axios from "axios";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
+import { ThreeDots } from "react-loader-spinner";
 
 export default function SignUpPage() {
 
@@ -12,9 +13,11 @@ export default function SignUpPage() {
     const [cpf, setCpf] = useState("");
     const [phone, setPhone] = useState("");
     const navigate = useNavigate();
+    const [isSubmiting, setIsSubmiting] = useState(false);
 
     function signUp(e) {
         e.preventDefault();
+        setIsSubmiting(true);
 
         function formatCpf(value) {
             const numericValue = value.replace(/\D/g, '');
@@ -51,7 +54,9 @@ export default function SignUpPage() {
                 icon: 'error',
                 confirmButtonText: 'Ok'
             });
-        });
+        }).finally(() => {
+			setIsSubmiting(false);
+		});
     };
 
     return (
@@ -66,7 +71,9 @@ export default function SignUpPage() {
                 <input type="password" required value={senha} onChange={e => setSenha(e.target.value)} placeholder="Senha" />
                 <input type="text" required value={cpf} onChange={e => setCpf(e.target.value)} placeholder="Cpf" />
                 <input type="text" required value={phone} onChange={e => setPhone(e.target.value)} placeholder="Telefone com DDD" />
-                <button type="submit">Realizar cadastro</button>
+                <button type="submit" disabled={isSubmiting}>
+                    {isSubmiting ? <ThreeDots color="black" width="40" height="40" /> : "Realizar cadastro"}
+                </button>
                 <Link to={`/`} >
                     <p>Já possui cadastro? Faça login</p>
                 </Link>
@@ -142,6 +149,9 @@ const FormConteiner = styled.form`
         color: #1670df;
         margin-bottom: 15px;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
         &:hover {
             background-color: #1670df;

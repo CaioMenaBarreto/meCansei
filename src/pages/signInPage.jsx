@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
 import AuthContext from "../contexts/AuthContext";
+import { ThreeDots } from "react-loader-spinner";
 
 export default function SignInPage() {
 
@@ -11,11 +12,12 @@ export default function SignInPage() {
     const {setName} = useContext(AuthContext);
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
+    const [isSubmiting, setIsSubmiting] = useState(false);
     const navigate = useNavigate();
 
     function signIn(e) {
         e.preventDefault();
-
+        setIsSubmiting(true);
         const data = {
             email: email,
             password: senha
@@ -36,7 +38,9 @@ export default function SignInPage() {
                 icon: 'error',
                 confirmButtonText: 'Ok'
             });
-        });
+        }).finally(() => {
+			setIsSubmiting(false);
+		});
     };
     return (
         <SignInConteiner>
@@ -47,7 +51,9 @@ export default function SignInPage() {
             <FormConteiner onSubmit={signIn}>
                 <input type="text" required value={email} onChange={e => setEmail(e.target.value)} placeholder="E-mail" />
                 <input type="password" required value={senha} onChange={e => setSenha(e.target.value)} placeholder="Senha" />
-                <button type="submit">Realizar login</button>
+                <button type="submit" disabled={isSubmiting}>
+                    {isSubmiting ? <ThreeDots color="black" width="40" height="40" /> : "Realizar login"}
+                </button>
                 <Link to={`/signUp`} >
                     <p>Faça seu cadastro aqui</p>
                 </Link>
@@ -124,6 +130,9 @@ const FormConteiner = styled.form`
         color: #1670df;
         margin-bottom: 15px;
         box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
         &:hover {
             background-color: #1670df;
@@ -139,3 +148,4 @@ const FormConteiner = styled.form`
         cursor: pointer;
     };
 `;
+
