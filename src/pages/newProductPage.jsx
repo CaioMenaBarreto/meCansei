@@ -18,6 +18,7 @@ export default function newProductPage() {
     const [photo, setPhoto] = useState("");
     const navigate = useNavigate();
     const [isSubmiting, setIsSubmiting] = useState(false);
+    const APIURL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
     function goStorePage() {
         navigate("/storePage");
@@ -57,7 +58,7 @@ export default function newProductPage() {
             }
         };
 
-        const promise = axios.post("https://mecansei.onrender.com/newProduct", data, config);
+        const promise = axios.post(`${APIURL}/newProduct`, data, config);
         promise.then(res => {
             Swal.fire({
                 title: 'Successo',

@@ -14,6 +14,7 @@ export default function SignInPage() {
     const [senha, setSenha] = useState("");
     const [isSubmiting, setIsSubmiting] = useState(false);
     const navigate = useNavigate();
+    const APIURL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
     function signIn(e) {
         e.preventDefault();
@@ -23,7 +24,7 @@ export default function SignInPage() {
             password: senha
         };
         
-        const promise = axios.post("https://mecansei.onrender.com/signIn", data);
+        const promise = axios.post(`${APIURL}/signIn`, data);
         promise.then((response) => {
             setToken(response.data.token);
             setName(response.data.name);

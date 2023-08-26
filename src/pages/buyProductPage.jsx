@@ -13,6 +13,7 @@ export default function buyProductPage() {
     const [product, setProduct] = useState({});
     const { id } = useParams();
     const navigate = useNavigate();
+    const APIURL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
     async function handleLogout() {
         const confirmLogout = await Swal.fire({
@@ -41,7 +42,7 @@ export default function buyProductPage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get(`https://mecansei.onrender.com/buyProduct/${id}`, config);
+                const res = await axios.get(`${APIURL}/buyProduct/${id}`, config);
                 setProduct(res.data);
                 console.log(res.data);
             } catch (error) {
@@ -71,7 +72,7 @@ export default function buyProductPage() {
     }
 
     function buyProduct() {
-        const promise = axios.put(`https://mecansei.onrender.com/buyProduct/${id}`, data, config);
+        const promise = axios.put(`${APIURL}/buyProduct/${id}`, data, config);
         promise
             .then(() => {
                     Swal.fire({

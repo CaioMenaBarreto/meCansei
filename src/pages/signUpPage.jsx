@@ -14,6 +14,7 @@ export default function SignUpPage() {
     const [phone, setPhone] = useState("");
     const navigate = useNavigate();
     const [isSubmiting, setIsSubmiting] = useState(false);
+    const APIURL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
     function signUp(e) {
         e.preventDefault();
@@ -44,7 +45,7 @@ export default function SignUpPage() {
             phone: formatPhone(phone)
         };
 
-        const promise = axios.post("https://mecansei.onrender.com/signUp", data)
+        const promise = axios.post(`${APIURL}/signUp`, data)
         promise.then(() => {
             navigate("/");
         }).catch(error => {

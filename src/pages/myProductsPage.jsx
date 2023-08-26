@@ -14,6 +14,7 @@ export default function myProductsPage() {
     const { name, logout, token } = useContext(AuthContext);
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
+    const APIURL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
     async function handleLogout() {
         const confirmLogout = await Swal.fire({
@@ -47,7 +48,7 @@ export default function myProductsPage() {
 
         const fetchData = async () => {
             try {
-                const res = await axios.get("https://mecansei.onrender.com/myProducts", config);
+                const res = await axios.get(`${APIURL}/myProducts`, config);
                 console.log(res.data);
                 setMyProducts(res.data);
             } catch (error) {

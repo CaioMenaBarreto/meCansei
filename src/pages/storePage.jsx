@@ -14,6 +14,7 @@ export default function StorePage() {
     const navigate = useNavigate();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const APIURL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
     function goNewProductPage() {
         navigate("/newProduct");
@@ -46,7 +47,7 @@ export default function StorePage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get("https://mecansei.onrender.com/storePage", config);
+                const res = await axios.get(`${APIURL}/storePage`, config);
                 setLoading(true)
                 setProducts(res.data.message);
             } catch (error) {

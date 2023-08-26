@@ -13,6 +13,7 @@ export default function DetailsMyProductPage() {
     const [product, setProduct] = useState({});
     const { id } = useParams();
     const navigate = useNavigate();
+    const APIURL = import.meta.env.VITE_REACT_APP_BASE_URL;
 
     async function handleLogout() {
         const confirmLogout = await Swal.fire({
@@ -46,7 +47,7 @@ export default function DetailsMyProductPage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get(`https://mecansei.onrender.com/detailMyProduct/${id}`, config);
+                const res = await axios.get(`${APIURL}/detailMyProduct/${id}`, config);
                 setProduct(res.data);
                 console.log(res.data);
             } catch (error) {
@@ -80,7 +81,7 @@ export default function DetailsMyProductPage() {
         });
 
         if (confirmDelete.isConfirmed) {
-            const promise = axios.delete(`https://mecansei.onrender.com/deleteMyProduct/${id}`, config);
+            const promise = axios.delete(`${APIURL}/deleteMyProduct/${id}`, config);
             promise.then(() => {
                 Swal.fire({
                     title: 'Sucesso',
