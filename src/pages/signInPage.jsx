@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
@@ -15,6 +15,15 @@ export default function SignInPage() {
     const [isSubmiting, setIsSubmiting] = useState(false);
     const navigate = useNavigate();
     const APIURL = import.meta.env.VITE_REACT_APP_BASE_URL;
+
+    useEffect(() => {
+
+		const existingToken = localStorage.getItem("token");
+		if (existingToken) {
+			navigate("/storePage");
+		};
+
+	}, [])
 
     function signIn(e) {
         e.preventDefault();
@@ -43,6 +52,11 @@ export default function SignInPage() {
 			setIsSubmiting(false);
 		});
     };
+
+    if (localStorage.getItem("token")) {
+        return null;
+    }
+
     return (
         <SignInConteiner>
             <LogoConteiner>
