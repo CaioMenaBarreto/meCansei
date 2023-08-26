@@ -1,17 +1,19 @@
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useQuickOut } from "../hooks/useQuickOut";
 import AuthContext from "../contexts/AuthContext";
 import { IonIcon } from '@ionic/react';
 import { logOutOutline } from 'ionicons/icons';
 import Swal from "sweetalert2";
+import { ThreeDots } from "react-loader-spinner";
 
 export default function StorePage() {
     const { name, logout, token } = useContext(AuthContext);
     const navigate = useNavigate();
     const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     function goNewProductPage() {
         navigate("/newProduct");
@@ -45,6 +47,7 @@ export default function StorePage() {
         const fetchData = async () => {
             try {
                 const res = await axios.get("https://mecansei.onrender.com/storePage", config);
+                setLoading(true)
                 setProducts(res.data.message);
             } catch (error) {
                 console.log(error);
@@ -57,6 +60,8 @@ export default function StorePage() {
                     icon: 'error',
                     confirmButtonText: 'Ok'
                 });
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -70,6 +75,35 @@ export default function StorePage() {
 
     function goMyProductsPage() {
         navigate("/myProducts");
+    }
+
+    if (loading) {
+        return (
+            <StoreConteiner>
+                <NavBar>
+                    <LogoConteiner>
+                        <LogoImg src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRdPmhNa0zJrX0rXeQSo9UVSeE5eQxz_4X4g_15HflV0EtHjK4Q" alt="Logo da empresa" />
+                        <LogoName>MeCansei</LogoName>
+                    </LogoConteiner>
+                    <ButtonNewProduct onClick={goNewProductPage}>
+                        Novo Produto
+                    </ButtonNewProduct>
+                    <ButtonMyProducts onClick={goMyProductsPage}>
+                        Ver meus produtos
+                    </ButtonMyProducts>
+                    <NameUser>
+                        Olá, {name}!
+                    </NameUser>
+                    <IonIcon icon={logOutOutline} style={{ fontSize: '38px', marginRight: '30px', color: '#ffffff' }} onClick={handleLogout} />
+                </NavBar>
+                <ProductsConteiner>
+                    <SearchProducts>
+                        <ThreeDots color="#1670df" height={80} width={80} />
+                    </SearchProducts>
+                </ProductsConteiner>
+            </StoreConteiner>
+        );
+
     }
 
     if (products.length === 0) {
@@ -232,6 +266,11 @@ const ProductsConteiner = styled.div`
     flex-wrap: wrap;
     margin-top: 100px;
 `;
+
+const SearchProducts = styled.div`
+    margin-left: 44%;
+    margin-top: 21%;
+`
 
 const NoHaveProducts = styled.p`
     font-family: 'Vollkorn', serif;

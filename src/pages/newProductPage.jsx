@@ -7,6 +7,8 @@ import { useQuickOut } from "../hooks/useQuickOut";
 import Swal from "sweetalert2";
 import { IonIcon } from '@ionic/react';
 import { logOutOutline } from 'ionicons/icons';
+import { ThreeDots } from "react-loader-spinner";
+
 
 export default function newProductPage() {
     const { name, token, logout } = useContext(AuthContext);
@@ -15,6 +17,7 @@ export default function newProductPage() {
     const [value, setValue] = useState("");
     const [photo, setPhoto] = useState("");
     const navigate = useNavigate();
+    const [isSubmiting, setIsSubmiting] = useState(false);
 
     function goStorePage() {
         navigate("/storePage");
@@ -101,8 +104,8 @@ export default function newProductPage() {
                     <input type="text" required value={description} id="description" onChange={e => setDescription(e.target.value)} placeholder="Descrição do seu novo produto" />
                     <input type="text" required value={value} id="value" onChange={e => setValue(e.target.value)} placeholder="Valor do seu novo produto" />
                     <input type="text" required value={photo} id="photo" onChange={e => setPhoto(e.target.value)} placeholder="Url da foto do seu produto" />
-                    <button type="submit">
-                        Criar novo produto
+                    <button type="submit" disabled={isSubmiting}>
+                    {isSubmiting ? <ThreeDots color="black" width="40" height="40" /> : "Criar novo produto"}
                     </button>
                 </FormConteiner>
             </NewProduct>

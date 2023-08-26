@@ -7,11 +7,13 @@ import AuthContext from "../contexts/AuthContext";
 import { IonIcon } from '@ionic/react';
 import { logOutOutline } from 'ionicons/icons';
 import Swal from "sweetalert2";
+import { ThreeDots } from "react-loader-spinner";
 
 export default function myProductsPage() {
     const [myProducts, setMyProducts] = useState([]);
     const { name, logout, token } = useContext(AuthContext);
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
 
     async function handleLogout() {
         const confirmLogout = await Swal.fire({
@@ -42,27 +44,85 @@ export default function myProductsPage() {
     };
 
     useEffect(() => {
-        const promise = axios.get("https://mecansei.onrender.com/myProducts", config);
-        promise.then(res => {
-            console.log(res.data);
-            setMyProducts(res.data)
-        }).catch(error => {
-            console.log(error);
-            if (error.response && error.response.status === 401) {
-                useQuickOut();
+
+        const fetchData = async () => {
+            try {
+                const res = await axios.get("https://mecansei.onrender.com/myProducts", config);
+                console.log(res.data);
+                setMyProducts(res.data);
+            } catch (error) {
+                console.log(error);
+                if (error.response && error.response.status === 401) {
+                    useQuickOut();
+                }
+                Swal.fire({
+                    title: 'Erro',
+                    text: error.response.data.message,
+                    icon: 'error',
+                    confirmButtonText: 'Ok'
+                });
+            } finally {
+                setLoading(false);
             }
-            Swal.fire({
-                title: 'Erro',
-                text: error.response.data.message,
-                icon: 'error',
-                confirmButtonText: 'Ok'
-            });
-        });
+        };
+
+        fetchData();
     }, []);
 
     function handleProductClick(id) {
         navigate(`/detailMyProduct/${id}`);
     };
+
+    if (loading) {
+        return (
+            <MyProductsConteiner>
+                <NavBar>
+                    <LogoConteiner>
+                        <LogoImg src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRdPmhNa0zJrX0rXeQSo9UVSeE5eQxz_4X4g_15HflV0EtHjK4Q" alt="Logo da empresa" />
+                        <LogoName>MeCansei</LogoName>
+                    </LogoConteiner>
+                    <button onClick={goStorePage}>
+                        Voltar para a loja
+                    </button>
+                    <NameUser>
+                        Olá, {name}!
+                    </NameUser>
+                    <IonIcon icon={logOutOutline} style={{ fontSize: '38px', marginRight: '30px', color: '#ffffff' }} onClick={handleLogout} />
+                </NavBar>
+                <ProductsConteiner>
+                    <SearchProducts>
+                        <ThreeDots color="#1670df" height={80} width={80} />
+                    </SearchProducts>
+                </ProductsConteiner>
+            </MyProductsConteiner>
+        );
+
+    }
+
+    if (myProducts.length === 0) {
+        return (
+            <MyProductsConteiner>
+                <NavBar>
+                    <LogoConteiner>
+                        <LogoImg src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRdPmhNa0zJrX0rXeQSo9UVSeE5eQxz_4X4g_15HflV0EtHjK4Q" alt="Logo da empresa" />
+                        <LogoName>MeCansei</LogoName>
+                    </LogoConteiner>
+                    <button onClick={goStorePage}>
+                        Voltar para a loja
+                    </button>
+                    <NameUser>
+                        Olá, {name}!
+                    </NameUser>
+                    <IonIcon icon={logOutOutline} style={{ fontSize: '38px', marginRight: '30px', color: '#ffffff' }} onClick={handleLogout} />
+                </NavBar>
+                <ProductsConteiner>
+                    <NoHaveProducts>
+                        Você ainda não possui nenhum produto à venda
+                    </NoHaveProducts>
+                </ProductsConteiner>
+            </MyProductsConteiner>
+        );
+    }
 
     return (
         <MyProductsConteiner>
@@ -176,6 +236,19 @@ const ProductsConteiner = styled.div`
     align-items: flex-start;
     flex-wrap: wrap;
     margin-top: 100px;
+`;
+
+const SearchProducts = styled.div`
+    margin-left: 44%;
+    margin-top: 21%;
+`;
+
+const NoHaveProducts = styled.p`
+    font-family: 'Vollkorn', serif;
+    color: #1670df;
+    font-size: 33px;
+    margin-left: 25%;
+    margin-top: 21%;
 `;
 
 const Product = styled.div`
